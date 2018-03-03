@@ -9,6 +9,10 @@ I'm checking what is the best implementation out there to proceed.
 
 In the meanwhile, this prototype implementation is required to validate the feasibility of the solution.
 
+The architecture could be simplified using [LIRC](http://www.lirc.org/) and irsend (thanks to [lego-lirc](https://github.com/iConor/lego-lirc)), removing the need of an arduino compatible board. But I do not like the need to setup the lirc daemon just for sending few commands.
+
+I'll check if it is feasible to use the following [library](https://github.com/bschwind/ir-slinger), really well detailed explaination at this [page](http://blog.bschwind.com/2016/05/29/sending-infrared-commands-from-a-raspberry-pi-without-lirc/).
+
 ## Current architecture
 
 * The user can access the RC car web ui over HTTP
