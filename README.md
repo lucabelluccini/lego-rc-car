@@ -25,7 +25,7 @@ I'll check if it is feasible to use the following [library](https://github.com/b
 
 * Raspberry Pi 3 or Zero W (any other battery powered board is potentially compatible)
 * Raspicam (or any compatible camera)
-* Any Arduino board or ESP8266 or ESP32
+* Any Arduino board or ESP8266 or ESP32 (for a compact board with RpiZeroW, [ESP IoT pHat](https://github.com/pimoroni/espiot-phat)
 * An IR Led and a resistor
 
 ## Current features
@@ -40,6 +40,15 @@ I'll check if it is feasible to use the following [library](https://github.com/b
 * [Streameye for RPi](https://github.com/ccrisan/streameye)
 * [Gorilla/websocket for Go](github.com/gorilla/websocket)
 * [Serial for Go](go.bug.st/serial.v1)
+* [Arduino CLI](https://github.com/arduino/arduino-cli)
+* [Arduino ESP8266](https://github.com/esp8266/Arduino)
+
+## Useful links related to Pimoroni ESP IoT pHat
+
+* https://github.com/pimoroni/espiot-phat
+* https://learn.pimoroni.com/tutorial/hal13/micropython-on-esp-iot-phat
+* https://learn.pimoroni.com/tutorial/hal13/getting-started-with-iot-phat
+* https://techhobbynotes.blogspot.com/2017/04/programming-esp8266-phat-from-raspberry.html
 
 ## How to run
 
@@ -51,4 +60,50 @@ I'll check if it is feasible to use the following [library](https://github.com/b
 # Connect the Arduino board via USB & check which port it is using via dmesg
 # Start the controller
 go run legorc.go
+```
+
+## How to build and upload the sketch on Arduino
+
+In case you are on a RPi Zero W and you end up with no more virtual memory:
+
+```
+# Set CONF_SWAPSIZE=1024 in /etc/dphys-swapfile
+sudo /etc/init.d/dphys-swapfile stop
+sudo /etc/init.d/dphys-swapfile start
+```
+
+Install the tools:
+
+- Download [arduino-cli](https://github.com/arduino/arduino-cli) and add it in your `$PATH`
+- Download [Arduino Power Functions library](https://github.com/jurriaan/Arduino-PowerFunctions) and install them in `~/Arduino/libraries`
+- Download [espiot-phat tools](https://github.com/pimoroni/espiot-phat)
+
+Add the support for ESP8266 to Arduino:
+
+```
+echo << EOF > ~/.cli-config.yml
+board_manager:
+  additional_urls:
+    - http://arduino.esp8266.com/stable/package_esp8266com_index.json
+EOF
+
+arduino-cli core update-index
+arduino-cli core install esp8266:esp8266
+```
+
+Prepare the sketch in this repo and store it in `~/Arduino/legorc/legorc.ino`.
+
+To build for ESP8266:
+
+```
+arduino-cli compile --fqbn esp8266:esp8266:nodemcu ~/Arduino/legorc
+```
+
+To upload:
+
+```
+# Run ~/Pimoroni/espiotphat/firmware/espflash.py in a separate shell
+arduino-cli upload -p /dev/ttyAMA0 --fqbn esp8266:esp8266:nodemcu /home/pi/Arduino/legorc
+# Stop espflash.py
+# Run espreset.py
 ```
