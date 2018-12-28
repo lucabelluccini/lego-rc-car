@@ -103,7 +103,7 @@ To upload:
 
 ```
 # Run ~/Pimoroni/espiotphat/firmware/espflash.py in a separate shell
-arduino-cli upload -p /dev/ttyAMA0 --fqbn esp8266:esp8266:nodemcu /home/pi/Arduino/legorc
+arduino-cli upload -p /dev/ttyAMA0 --fqbn esp8266:esp8266:nodemcu ~/Arduino/legorc
 # Stop espflash.py
 # Run espreset.py
 ```
