@@ -3,28 +3,66 @@
   <head>
     <meta charset="utf-8"/>
     <title>Player</title>
+    <style>
+body {
+  -ms-touch-action:none;
+  position: relative;
+  width: 100%;
+  padding: 0;
+}
+
+.slider {
+  top: 0;
+  position: relative;
+  display: inline-block;
+  height: 300px;
+}
+
+.padding {
+  width: 25%;
+}
+
+.left {
+  background: rgba(0,0,255, 0.1);
+}
+.right {
+  background: rgba(255,0,0, 0.1);
+}
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/12.1.0/nouislider.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/12.1.0/nouislider.min.js"></script>
+    
     <script type="text/javascript">
 window.onload = function () {
+
+    var camera = document.getElementById("camera");
+    camera.src = window.location.protocol + "//" + window.location.hostname + ":8080";
+
+var sliderLeft = document.getElementById("sliderLeft");
+var sliderRight = document.getElementById("sliderRight");
+
+noUiSlider.create(sliderLeft, {
+	start: 0,
+	orientation: 'vertical',
+  step: 1,
+        direction: 'rtl',
+	range: {
+		'min': -7,
+		'max': 7
+	}
+});
+noUiSlider.create(sliderRight, {
+	start: 0,
+	orientation: 'vertical',
+  step: 1,
+        direction: 'rtl',
+	range: {
+		'min': -7,
+		'max': 7
+	}
+});
+
     var conn;
-
-   
-    var left = document.getElementById("left");
-    left.addEventListener('input', function() {
-      console.log("Left: " + left.value);
-      sendCommand(left.value, right.value);
-    }, false);
-    var right = document.getElementById("right");
-    right.addEventListener('input', function() {
-      console.log("Right: " + right.value)
-      sendCommand(left.value, right.value);
-    }, false);
-
-
-    function sendCommand(leftValue, rightValue) {
-      conn.send(leftValue + "," + rightValue);
-      console.log(leftValue + "," + rightValue);
-    }
-    //
 
     if (window["WebSocket"]) {
         conn = new WebSocket("ws://" + document.location.host + "/ws");
@@ -39,16 +77,35 @@ window.onload = function () {
         var item = document.createElement("div");
         console.log("Your browser does not support WebSockets.");
     }
+
+    function sendCommand(connection, left, right) {
+        console.log(left,right);
+        if (connection.readyState === connection.OPEN) {
+            connection.send(Math.trunc(right) + ',' + Math.trunc(left));
+        }
+    }
+
+    sliderLeft.noUiSlider.on('update.left', function (values, handle) {
+        sendCommand(conn, sliderLeft.noUiSlider.get(), sliderRight.noUiSlider.get());
+    });
+
+    sliderRight.noUiSlider.on('update.right', function (values, handle) {
+        sendCommand(conn, sliderLeft.noUiSlider.get(), sliderRight.noUiSlider.get());
+    });
+
 };
 </script>
   </head>
   <body>
     <div>
-      <img src="http://" + document.location.host + ":8080">
+      <img id="camera" src="">
     </div>
     <div>
-      <input id="left" type="range" min="-7" max="7" step="1">
-      <input id="right" type="range" min="-7" max="7" step="1">
+
+<div class="slider padding"></div>
+<div id="sliderLeft" class="slider left"></div>
+<div class="slider padding"></div>
+<div id="sliderRight" class="slider right"></div>
     </div>
   </body>
 </html>

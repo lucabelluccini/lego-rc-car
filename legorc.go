@@ -96,7 +96,7 @@ func serveHome(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 
-	port, err := serial.Open("/dev/ttyUSB0", &serial.Mode{
+	port, err := serial.Open("/dev/ttyAMA0", &serial.Mode{
 		BaudRate: 115200,
 	})
 	if err != nil {

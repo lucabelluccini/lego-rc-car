@@ -64,12 +64,34 @@ go run legorc.go
 
 ## How to build and upload the sketch on Arduino
 
+To install latest version of Go
+```
+url=`curl https://golang.org/dl/ | grep armv6l | sort --version-sort | tail -1 | grep -o -E https://dl.google.com/go/go[0-9]+\.[0-9]+((\.[0-9]+)?).linux-armv6l.tar.gz` 
+wget ${url}
+sudo tar -C /usr/local -xvf `echo ${url} | cut -d '/' -f5`
+cat >> ~/.bashrc << 'EOF'
+export GOPATH=$HOME/go
+export PATH=/usr/local/go/bin:$PATH:$GOPATH/bin
+EOF
+source ~/.bashrc
+```
+
 In case you are on a RPi Zero W and you end up with no more virtual memory:
 
 ```
 # Set CONF_SWAPSIZE=1024 in /etc/dphys-swapfile
 sudo /etc/init.d/dphys-swapfile stop
 sudo /etc/init.d/dphys-swapfile start
+```
+
+To disable HDMI:
+```
+/usr/bin/tvservice -o # add it to /etc/rc.local for permanent 
+```
+
+To disable Wireless power management:
+```
+wireless-power off # to be added to /etc/network/interfaces
 ```
 
 Install the tools:
