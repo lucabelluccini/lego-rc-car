@@ -121,6 +121,23 @@ v4l2-ctl --set-ctrl video_bitrate=10000000
 v4l2-ctl --list-formats
 ```
 
+## Streaming from RPi Camera
+
+### [Source](https://raspberrypi.stackexchange.com/questions/26675/modern-way-to-stream-h-264-from-the-raspberry-cam)
+```
+v4l2-ctl --set-fmt-video=width=$width,height=$height,pixelformat=4
+v4l2-ctl --set-ctrl=rotate=$rotation
+v4l2-ctl --overlay=1
+v4l2-ctl -p $framerate
+v4l2-ctl --set-ctrl=video_bitrate=4000000 //or whatever
+gst-launch-1.0 v4l2src ! video/x-h264, width=$width, height=$height, framerate=$framerate/1 ! h264parse ! rtph264pay config-interval=1 pt=96 ! udpsink sync=false host=$host port=$port
+```
+
+### [Source](https://wiki.marcluerssen.de/index.php?title=Raspberry_Pi/Camera_streaming)
+```
+raspivid -a 12 -t 0 -w 1280 -h 720 -hf -ih -fps 30 -o udp://192.168.1.10:5000
+```
+
 ## GStreamer
 
 * [Gstreamer RPi with Omx](https://wiki.jmk.hu/wiki/Live_Video_Streaming_with_Raspberry_Pi_camera_module)
