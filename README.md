@@ -129,8 +129,3 @@ arduino-cli upload -p /dev/ttyAMA0 --fqbn esp8266:esp8266:nodemcu ~/Arduino/lego
 # Stop espflash.py
 # Run espreset.py
 ```
-
-## References
-
-- [Low latency streaming on RPi FPV](https://www.wumpus-cave.net/2015/11/06/low-latency-fpv-streaming-with-the-raspberry-pi/)
-- [WebRTC Camera on RPi](https://www.rs-online.com/designspark/building-a-raspberry-pi-2-webrtc-camera)
